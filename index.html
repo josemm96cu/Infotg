@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Telegram WebApp - Perfil y Datos</title>
+    <title>✨ TeleWebApp Premium ✨</title>
     <!-- Telegram WebApp CDN oficial -->
     <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+    <!-- Font Awesome 6 (iconos gratuitos) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -14,529 +16,579 @@
         }
 
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
-            padding: 20px;
-            transition: background 0.2s ease, color 0.2s ease;
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background: var(--tg-theme-bg-color, #0f0f1a);
+            color: var(--tg-theme-text-color, #ffffff);
+            padding: 20px 16px 40px;
+            transition: background 0.3s ease, color 0.2s;
             min-height: 100vh;
         }
 
-        /* Contenedor principal tipo tarjeta */
-        .container {
+        /* Contenedor principal */
+        .glass-card {
             max-width: 550px;
             margin: 0 auto;
-            background: var(--tg-theme-secondary-bg-color, #f5f5f5);
-            border-radius: 28px;
+            background: rgba( var(--tg-theme-secondary-bg-color-rgb, 30, 30, 40), 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
             padding: 24px 20px 32px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-            transition: background 0.2s;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
         }
 
-        h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
+        /* Encabezado */
+        .header {
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
             flex-wrap: wrap;
+            margin-bottom: 20px;
+            gap: 12px;
         }
-
-        .badge {
-            background: var(--tg-theme-button-color, #3390ec);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            padding: 4px 12px;
-            border-radius: 40px;
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FFD700, #FFB347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .premium-badge {
+            background: linear-gradient(145deg, #f5af19, #f12711);
+            padding: 6px 14px;
+            border-radius: 100px;
             font-size: 0.75rem;
-            font-weight: 500;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-
-        .sub {
-            color: var(--tg-theme-hint-color, #8e8e93);
-            margin-bottom: 28px;
-            font-size: 0.9rem;
-            border-left: 3px solid var(--tg-theme-button-color, #3390ec);
-            padding-left: 12px;
-        }
-
-        /* Avatar grande */
         .avatar-section {
             display: flex;
             justify-content: center;
-            margin: 20px 0 20px;
+            margin: 15px 0 20px;
         }
-
-        .avatar-img {
-            width: 120px;
-            height: 120px;
+        .avatar {
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
-            object-fit: cover;
-            background: var(--tg-theme-hint-color, #c4c4c6);
-            border: 3px solid var(--tg-theme-button-color, #3390ec);
-            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
-        }
-
-        .avatar-placeholder {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #6c93ff, #3b6eff);
+            background: linear-gradient(145deg, #3a6ea5, #1e3a5f);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 3rem;
             font-weight: bold;
             color: white;
-            border: 3px solid var(--tg-theme-button-color, #3390ec);
-            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+            border: 3px solid var(--tg-theme-button-color, #ffb347);
+            transition: transform 0.2s ease;
         }
-
-        /* Tarjetas de datos */
-        .info-card {
-            background: var(--tg-theme-bg-color, #ffffff);
-            border-radius: 20px;
-            padding: 16px 18px;
-            margin: 16px 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: background 0.2s;
+        .avatar i {
+            font-size: 3.5rem;
         }
-
-        .info-row {
+        /* Info Grid */
+        .info-grid {
+            background: var(--tg-theme-bg-color, #1e1e2a);
+            border-radius: 28px;
+            padding: 8px 0;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .info-item {
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--tg-theme-hint-color, #e5e5ea);
+            align-items: center;
+            padding: 14px 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            transition: background 0.2s;
         }
-
-        .info-row:last-child {
+        .info-item:last-child {
             border-bottom: none;
         }
-
         .info-label {
             font-weight: 500;
-            color: var(--tg-theme-hint-color, #6c6c70);
+            color: var(--tg-theme-hint-color, #aaa);
             font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
-
         .info-value {
-            font-weight: 500;
-            font-size: 1rem;
-            word-break: break-word;
+            font-weight: 600;
             text-align: right;
-            max-width: 60%;
-            color: var(--tg-theme-text-color, #000);
+            word-break: break-word;
+            max-width: 55%;
+            background: rgba(255,255,255,0.05);
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.9rem;
         }
-
-        .code-value {
-            font-family: monospace;
-            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.85rem;
+        /* Estrellas y pagos */
+        .stars-section {
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 30px;
+            padding: 18px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px solid rgba(255, 215, 0, 0.3);
         }
-
-        /* Botones estilo Telegram */
-        .telegram-button {
-            background: var(--tg-theme-button-color, #3390ec);
-            color: var(--tg-theme-button-text-color, #ffffff);
+        .stars-amount {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #FFD966;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-star {
+            background: linear-gradient(95deg, #f9b43a, #fb6b1d);
             border: none;
-            border-radius: 40px;
-            padding: 12px 20px;
-            font-size: 1rem;
-            font-weight: 500;
+            border-radius: 60px;
+            padding: 14px 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: white;
             width: 100%;
+            margin-top: 12px;
             cursor: pointer;
-            transition: opacity 0.2s;
-            margin-top: 16px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-
-        .telegram-button:active {
-            opacity: 0.7;
+        .btn-star:active {
+            transform: scale(0.97);
         }
-
-        .secondary-button {
-            background: transparent;
-            border: 1px solid var(--tg-theme-button-color, #3390ec);
-            color: var(--tg-theme-button-color, #3390ec);
-            margin-top: 8px;
+        .btn-secondary {
+            background: var(--tg-theme-button-color, #2e6edf);
+            margin-top: 10px;
         }
-
-        .footer-note {
-            margin-top: 28px;
-            text-align: center;
-            font-size: 0.7rem;
-            color: var(--tg-theme-hint-color, #8e8e93);
+        .footer-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
         }
-
-        /* Loader */
-        .loader {
-            text-align: center;
-            padding: 30px;
-            font-style: italic;
-            color: var(--tg-theme-hint-color);
+        .action-btn {
+            flex: 1;
+            background: rgba(255,255,255,0.12);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 0;
+            font-weight: 500;
+            color: var(--tg-theme-text-color, white);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-
-        /* Mensaje de error / info */
-        .error-message {
-            background: rgba(255, 69, 58, 0.1);
-            border-left: 4px solid #ff453a;
-            padding: 12px;
-            border-radius: 14px;
-            margin: 16px 0;
-            font-size: 0.85rem;
+        .action-btn:active {
+            background: rgba(255,255,255,0.25);
+            transform: scale(0.96);
         }
-
-        @media (max-width: 480px) {
-            body {
-                padding: 12px;
-            }
-            .container {
-                padding: 18px 16px;
-            }
-            .info-value {
-                max-width: 55%;
-                font-size: 0.9rem;
-            }
+        /* animaciones */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.02); opacity: 0.9; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pulse {
+            animation: pulse 0.5s ease;
+        }
+        .toast-message {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--tg-theme-button-color, #2e6edf);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 6px 14px black;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .hidden { display: none; }
+        i, .fas, .far { margin-right: 4px; }
+        hr {
+            margin: 12px 0;
+            border-color: rgba(255,255,255,0.1);
         }
     </style>
 </head>
 <body>
-    <div class="container" id="app">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1>Telegram Info <span class="badge">WebApp</span></h1>
-        </div>
-        <div class="sub">Datos extraídos directamente de la cuenta de Telegram</div>
-
-        <!-- Avatar dinámico -->
-        <div class="avatar-section" id="avatarContainer">
-            <div class="loader">Cargando perfil...</div>
-        </div>
-
-        <!-- Panel de información principal -->
-        <div class="info-card" id="infoPanel">
-            <div class="info-row">
-                <span class="info-label">🆔 ID de usuario</span>
-                <span class="info-value" id="userId">—</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">👤 Nombre</span>
-                <span class="info-value" id="firstName">—</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">🏷️ Apellido</span>
-                <span class="info-value" id="lastName">—</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">@ Username</span>
-                <span class="info-value" id="username">—</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">🌐 Idioma</span>
-                <span class="info-value" id="languageCode">—</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">📱 Plataforma</span>
-                <span class="info-value" id="platform">—</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">📲 Versión WebApp</span>
-                <span class="info-value" id="version">—</span>
-            </div>
-        </div>
-
-        <!-- Estado de la foto de perfil (acceso) -->
-        <div id="photoStatus" class="error-message" style="display: none;"></div>
-
-        <!-- Botones de acción -->
-        <button class="telegram-button" id="copyIdBtn">📋 Copiar mi ID de Telegram</button>
-        <button class="telegram-button secondary-button" id="shareInfoBtn">📤 Compartir mi información</button>
-        <button class="telegram-button secondary-button" id="closeBtn" style="background: var(--tg-theme-destructive-text-color, #ff3b30); border: none; color: white;">✖️ Cerrar WebApp</button>
-        
-        <div class="footer-note">
-            Los datos se obtienen directamente de la API de Telegram WebApp.<br>
-            La foto de perfil se muestra si el usuario ha concedido acceso.
+<div class="glass-card" id="app">
+    <div class="header">
+        <h1><i class="fas fa-star-of-life"></i> TeleHub <span style="font-size:0.9rem;">✨</span></h1>
+        <div id="premiumChip" class="premium-badge"><i class="fas fa-gem"></i> Cargando...</div>
+    </div>
+    
+    <!-- Avatar con animación -->
+    <div class="avatar-section">
+        <div class="avatar" id="avatarDisplay">
+            <i class="fas fa-user-astronaut"></i>
         </div>
     </div>
 
-    <script>
-        // Inicializar WebApp de Telegram
-        const tg = window.Telegram.WebApp;
-        
-        // Expandir la WebApp para mejor experiencia
-        tg.expand();
-        
-        // Colores dinámicos según tema del cliente
-        const updateTheme = () => {
-            document.body.style.backgroundColor = tg.themeParams.bg_color || '#ffffff';
-            document.body.style.color = tg.themeParams.text_color || '#000000';
-            // También se podría ajustar más estilos, pero CSS vars lo manejan
-        };
-        updateTheme();
-        
-        // Referencias a elementos DOM
-        const userIdSpan = document.getElementById('userId');
-        const firstNameSpan = document.getElementById('firstName');
-        const lastNameSpan = document.getElementById('lastName');
-        const usernameSpan = document.getElementById('username');
-        const languageCodeSpan = document.getElementById('languageCode');
-        const platformSpan = document.getElementById('platform');
-        const versionSpan = document.getElementById('version');
-        const avatarContainer = document.getElementById('avatarContainer');
-        const photoStatusDiv = document.getElementById('photoStatus');
-        
-        // Variables para almacenar datos del usuario
-        let userData = {
-            id: null,
-            first_name: null,
-            last_name: null,
-            username: null,
-            language_code: null
-        };
-        
-        // Función para mostrar el avatar (con foto real o placeholder)
-        function displayAvatar(photoUrl = null, initials = '?') {
-            avatarContainer.innerHTML = ''; // Limpiar loader
-            if (photoUrl && photoUrl !== '') {
-                // Intentar mostrar la imagen de perfil de Telegram
-                const img = document.createElement('img');
-                img.className = 'avatar-img';
-                img.alt = 'Avatar';
-                img.src = photoUrl;
-                img.onerror = () => {
-                    // Si falla la carga, mostrar placeholder con iniciales
-                    showPlaceholderAvatar(initials);
-                };
-                avatarContainer.appendChild(img);
+    <!-- Grid de información extensa -->
+    <div class="info-grid" id="infoGrid">
+        <div class="info-item"><span class="info-label"><i class="fas fa-fingerprint"></i> ID de usuario</span><span class="info-value" id="userId">—</span></div>
+        <div class="info-item"><span class="info-label"><i class="fas fa-user-circle"></i> Nombre completo</span><span class="info-value" id="fullName">—</span></div>
+        <div class="info-item"><span class="info-label"><i class="fab fa-telegram"></i> Username</span><span class="info-value" id="username">—</span></div>
+        <div class="info-item"><span class="info-label"><i class="fas fa-language"></i> Idioma</span><span class="info-value" id="lang">—</span></div>
+        <div class="info-item"><span class="info-label"><i class="fas fa-calendar-alt"></i> Fecha y hora local</span><span class="info-value" id="datetime">—</span></div>
+        <div class="info-item"><span class="info-label"><i class="fas fa-crown"></i> Telegram Premium</span><span class="info-value" id="premiumStatus">🔍 Detectando...</span></div>
+        <div class="info-item"><span class="info-label"><i class="fas fa-mobile-alt"></i> Plataforma</span><span class="info-value" id="platform">—</span></div>
+        <div class="info-item"><span class="info-label"><i class="fas fa-code-branch"></i> Versión WebApp</span><span class="info-value" id="version">—</span></div>
+        <div class="info-item"><span class="info-label"><i class="fas fa-globe"></i> Tema oscuro</span><span class="info-value" id="darkMode">—</span></div>
+    </div>
+
+    <!-- Sección de pago con estrellas -->
+    <div class="stars-section" id="starsBox">
+        <div class="stars-amount">
+            <i class="fas fa-star" style="color: #FFD966;"></i> <span id="starQty">0</span> estrellas
+        </div>
+        <p style="font-size: 12px; margin-top: 6px;">✨ Apoya el desarrollo con estrellas de Telegram ✨</p>
+        <button id="payStarsBtn" class="btn-star"><i class="fas fa-rocket"></i> Pagar con estrellas</button>
+        <button id="payCustomStarsBtn" class="btn-star btn-secondary" style="background: #4a6fa5;"><i class="fas fa-gem"></i> Personalizar monto</button>
+    </div>
+
+    <!-- Botones de utilidad -->
+    <div class="footer-buttons">
+        <button id="copyIdBtn" class="action-btn"><i class="fas fa-copy"></i> Copiar ID</button>
+        <button id="shareBtn" class="action-btn"><i class="fas fa-share-alt"></i> Compartir perfil</button>
+        <button id="closeBtn" class="action-btn"><i class="fas fa-times-circle"></i> Cerrar</button>
+    </div>
+    <div style="text-align:center; font-size: 11px; margin-top: 20px; opacity:0.6">
+        <i class="fas fa-shield-alt"></i> WebApp Oficial · Los datos son privados
+    </div>
+</div>
+
+<script>
+    // --- INICIALIZACIÓN DE TELEGRAM WEBAPP ---
+    const tg = window.Telegram.WebApp;
+    tg.expand();            // Expandir a pantalla completa
+    tg.ready();
+    
+    // Habilitar botón de retroceso
+    tg.BackButton.onClick(() => tg.close());
+    tg.BackButton.show();
+
+    // Elementos del DOM
+    const userIdSpan = document.getElementById('userId');
+    const fullNameSpan = document.getElementById('fullName');
+    const usernameSpan = document.getElementById('username');
+    const langSpan = document.getElementById('lang');
+    const dateTimeSpan = document.getElementById('datetime');
+    const premiumStatusSpan = document.getElementById('premiumStatus');
+    const platformSpan = document.getElementById('platform');
+    const versionSpan = document.getElementById('version');
+    const darkModeSpan = document.getElementById('darkMode');
+    const premiumChip = document.getElementById('premiumChip');
+    const avatarDiv = document.getElementById('avatarDisplay');
+    const starQtySpan = document.getElementById('starQty');
+
+    // Datos de usuario (extracción completa)
+    let userData = {
+        id: null,
+        first_name: null,
+        last_name: null,
+        username: null,
+        language_code: null,
+        is_premium: false,   // por defecto
+        photo_url: null
+    };
+
+    // Función para mostrar notificación flotante (toast)
+    function showToast(message, duration = 2500) {
+        let existingToast = document.querySelector('.toast-message');
+        if(existingToast) existingToast.remove();
+        let toast = document.createElement('div');
+        toast.className = 'toast-message';
+        toast.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, duration);
+    }
+
+    // Actualizar fecha y hora local en tiempo real
+    function updateDateTime() {
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        const formatted = now.toLocaleDateString(undefined, options);
+        dateTimeSpan.textContent = formatted;
+        // también guardar actualización cada segundo opcional, pero no es necesario pesado
+        setTimeout(updateDateTime, 1000);
+    }
+
+    // Cargar toda la información del usuario desde initDataUnsafe
+    function loadTelegramUserData() {
+        try {
+            const initData = tg.initDataUnsafe || {};
+            const user = initData.user || {};
+            
+            userData.id = user.id || null;
+            userData.first_name = user.first_name || '';
+            userData.last_name = user.last_name || '';
+            userData.username = user.username || null;
+            userData.language_code = user.language_code || navigator.language.split('-')[0] || 'es';
+            
+            // DETECCIÓN DE PREMIUM: En Telegram WebApp no viene explícito is_premium, pero podemos detectar por el emoji status o usando el parámetro "premium" del objeto user?
+            // La documentación reciente indica que en user puede aparecer "is_premium": true si el usuario tiene Telegram Premium.
+            // Además, en tg.initDataUnsafe.user podemos acceder a 'is_premium'. Lo comprobamos:
+            if (user.hasOwnProperty('is_premium')) {
+                userData.is_premium = user.is_premium === true;
             } else {
-                showPlaceholderAvatar(initials);
-            }
-        }
-        
-        function showPlaceholderAvatar(initials) {
-            avatarContainer.innerHTML = '';
-            const placeholder = document.createElement('div');
-            placeholder.className = 'avatar-placeholder';
-            // Tomar hasta dos letras: primera letra del nombre, o primera del apellido
-            let text = initials.length > 0 ? initials.substring(0,2).toUpperCase() : '?';
-            placeholder.textContent = text;
-            avatarContainer.appendChild(placeholder);
-        }
-        
-        // Obtener iniciales del usuario
-        function getUserInitials() {
-            let first = userData.first_name || '';
-            let last = userData.last_name || '';
-            if (first.length > 0 && last.length > 0) {
-                return first[0] + last[0];
-            } else if (first.length > 0) {
-                return first[0];
-            } else if (last.length > 0) {
-                return last[0];
-            } else if (userData.username && userData.username.length > 0) {
-                return userData.username[0];
-            }
-            return 'U';
-        }
-        
-        // Cargar foto de perfil vía método experimental y API de Telegram
-        // Nota: Telegram WebApp NO tiene un método directo .getProfilePhoto, pero podemos usar
-        // el objeto `Telegram.WebApp.initDataUnsafe.user` para saber que el usuario existe.
-        // Para obtener la foto de perfil REAL, usamos un endpoint especial que requiere el user id
-        // y un token de bot? No es posible directamente por seguridad.
-        // Sin embargo, podemos usar el método `openTelegramLink` o mostrar un aviso.
-        // Pero en la documentación de Telegram Bots API, la WebApp puede solicitar permiso de "photo" si el bot tiene el método.
-        // De manera alternativa, para demostración y por privacidad, Telegram solo provee foto si el bot
-        // ha solicitado acceso mediante `requestWriteAccess` o similar, pero no hay método nativo.
-        // Implementación creativa: Mostramos foto predeterminada con iniciales y damos opción de usar
-        // `Telegram.WebApp.showPopup` indicando cómo puede el usuario compartir su foto.
-        // Sin embargo, para satisfacer "extraer foto de perfil de telegram", podemos usar la API de Bot 
-        // si el bot conoce el user_id y tiene acceso a getFile? No es viable en solo frontend.
-        // En su lugar, aprovechamos la posibilidad de que el usuario *suba* su foto a un servidor? No.
-        // Lo correcto: la WebApp no puede extraer la foto de perfil directamente por políticas de privacidad.
-        // Pero podemos mostrar un enlace a un método alternativo: usando `tg.requestContact` etc? No.
-        // Para una solución más elegante, usaré un servicio que genera avatar basado en iniciales + color y 
-        // también verifico si el objeto `user` tiene `photo_url`? No existe en initDataUnsafe.
-        // Algunas implementaciones custom: si el bot ha solicitado `requestWriteAccess` y el usuario aceptó,
-        // se puede recuperar. No es estándar. Por tanto, mostraré un mensaje explicativo y usaré placeholder
-        // con las iniciales, pero también permitiré que si el usuario quiere ver su foto real, 
-        // podemos generar un "avatar por defecto" con el ID de usuario. En esta demo, usaré una API externa 
-        // de avatar UI (UI Avatars) para generar una imagen con iniciales, simulando la foto, y dando información.
-        // Aún así, cumplo parcialmente: el usuario ve una representación visual de su perfil.
-        // Para mejorar: mostrar el avatar real si el bot está configurado para obtener la foto mediante getUserProfilePhotos.
-        // Pero en una WebApp estática sin backend, no se puede obtener la foto real debido a restricciones.
-        // La mejor aproximación: mostrar un placeholder, y mediante el botón solicitar al bot que envíe la foto.
-        // Sin embargo, el prompt es: "extraiga información de quien abre la web, foto de perfil de telegram o id".
-        // Entonces extraemos ID, nombre, username, etc., y foto de perfil: si el usuario ha iniciado sesión,
-        // podemos mostrar su foto REAL si usamos un endpoint de CDN de Telegram usando `user.id` y un bot token? No seguro.
-        // Explicaré en la interfaz que la foto requiere interacción adicional, pero mostraré un avatar interactivo.
-        // Finalmente, por cumplimiento, mostraré un aviso informativo y un avatar generado con iniciales.
-        
-        // Función para obtener foto real vía un proxy (hipotético) pero no se puede sin backend.
-        // Así que implemento generador de avatar basado en ID + nombre, parecido a lo que hace Gravatar.
-        function generateAvatarUrl(userId, name) {
-            // Usamos servicio UI Avatars para crear una imagen basada en iniciales
-            const initials = getUserInitials();
-            // URL de UI Avatars (servicio gratuito)
-            return `https://ui-avatars.com/api/?background=3b6eff&color=fff&rounded=true&size=120&bold=true&length=2&name=${encodeURIComponent(initials)}`;
-        }
-        
-        // Recopilar datos del usuario desde Telegram WebApp
-        function loadUserData() {
-            try {
-                const initDataUnsafe = tg.initDataUnsafe || {};
-                const user = initDataUnsafe.user || {};
-                
-                // Asignar valores reales
-                userData.id = user.id || null;
-                userData.first_name = user.first_name || null;
-                userData.last_name = user.last_name || null;
-                userData.username = user.username || null;
-                userData.language_code = user.language_code || navigator.language.split('-')[0] || 'en';
-                
-                // Mostrar en DOM
-                userIdSpan.textContent = userData.id ? userData.id : 'No disponible (sin inicio sesión)';
-                firstNameSpan.textContent = userData.first_name || '—';
-                lastNameSpan.textContent = userData.last_name || '—';
-                usernameSpan.textContent = userData.username ? '@' + userData.username : '—';
-                languageCodeSpan.textContent = userData.language_code || '—';
-                platformSpan.textContent = tg.platform || 'desconocida';
-                versionSpan.textContent = tg.version || '6.0+';
-                
-                // Iniciales para avatar
-                const initials = getUserInitials();
-                
-                // Mostrar foto de perfil: como no hay método directo, usamos avatar generado con iniciales
-                // pero además mostramos un mensaje educativo: que la foto real solo está disponible si el bot 
-                // solicita permiso, etc. Y proporcionamos un botón alternativo para ver la foto real desde el perfil.
-                const avatarUrl = generateAvatarUrl(userData.id, initials);
-                displayAvatar(avatarUrl, initials);
-                
-                // Información extra sobre la foto de perfil
-                if (userData.id) {
-                    photoStatusDiv.style.display = 'block';
-                    photoStatusDiv.innerHTML = `ℹ️ Nota: La foto de perfil real de Telegram requiere permisos adicionales del bot. Mostramos un avatar personalizado con tus iniciales. Tu ID de usuario: <strong>${userData.id}</strong> puede ser usado por el bot para obtener tu foto mediante la API de bots (getUserProfilePhotos).`;
-                    photoStatusDiv.style.background = 'rgba(52, 199, 89, 0.1)';
-                    photoStatusDiv.style.borderLeftColor = '#34c759';
-                } else {
-                    photoStatusDiv.style.display = 'block';
-                    photoStatusDiv.innerHTML = `⚠️ No se ha podido obtener ID de usuario. Asegúrate de abrir esta WebApp desde Telegram. La foto de perfil no está disponible.`;
-                    photoStatusDiv.style.background = 'rgba(255, 149, 0, 0.1)';
-                }
-                
-            } catch (error) {
-                console.error('Error cargando datos:', error);
-                userIdSpan.textContent = 'Error al cargar';
-                avatarContainer.innerHTML = '<div class="loader">Error obteniendo datos</div>';
-                photoStatusDiv.style.display = 'block';
-                photoStatusDiv.innerHTML = `❌ Error: ${error.message}. Asegúrate de abrir la app dentro de Telegram.`;
-            }
-        }
-        
-        // Método para copiar ID al portapapeles
-        function copyUserId() {
-            const idText = userData.id ? userData.id.toString() : '';
-            if (!idText || idText === 'null') {
-                tg.showPopup({
-                    title: 'Sin ID',
-                    message: 'No hay ID de usuario disponible para copiar.',
-                    buttons: [{type: 'ok'}]
-                });
-                return;
+                // fallback: algunos bots pueden pasar custom, pero por defecto lo dejamos como falso hasta que el usuario interactúe
+                userData.is_premium = false;
             }
             
-            // Usar API nativa de clipboard
-            navigator.clipboard.writeText(idText).then(() => {
-                tg.showPopup({
-                    title: '✅ Copiado',
-                    message: `ID ${idText} copiado al portapapeles.`,
-                    buttons: [{type: 'ok'}]
-                });
-                tg.HapticFeedback?.notificationOccurred('success');
-            }).catch(() => {
-                tg.showPopup({
-                    title: 'Error',
-                    message: 'No se pudo copiar el ID manualmente.',
-                    buttons: [{type: 'ok'}]
-                });
-            });
-        }
-        
-        // Compartir información (ID, nombre) usando el método shareToStory o popup
-        function shareInfo() {
-            if (!userData.id) {
-                tg.showPopup({
-                    title: 'Info incompleta',
-                    message: 'No hay datos de usuario para compartir.',
-                    buttons: [{type: 'ok'}]
-                });
-                return;
+            // Mostrar en UI
+            userIdSpan.textContent = userData.id ? userData.id : 'No disponible';
+            const fullName = `${userData.first_name} ${userData.last_name}`.trim() || 'Usuario Telegram';
+            fullNameSpan.textContent = fullName;
+            usernameSpan.textContent = userData.username ? '@' + userData.username : '—';
+            langSpan.textContent = userData.language_code.toUpperCase();
+            platformSpan.textContent = tg.platform || 'Web';
+            versionSpan.textContent = tg.version || '6.x';
+            const isDark = tg.colorScheme === 'dark';
+            darkModeSpan.textContent = isDark ? 'Activado 🌙' : 'Claro ☀️';
+            
+            // Estado Premium
+            if (userData.is_premium) {
+                premiumStatusSpan.innerHTML = '<span style="color:#FFD966;"><i class="fas fa-crown"></i> PREMIUM ACTIVO</span>';
+                premiumChip.innerHTML = '<i class="fas fa-crown"></i> PREMIUM ✨';
+                premiumChip.style.background = "linear-gradient(145deg, #f5af19, #f12711)";
+                // Avatar con toque premium
+                avatarDiv.style.background = "linear-gradient(145deg, #f7b42c, #fc575e)";
+                avatarDiv.innerHTML = '<i class="fas fa-crown" style="font-size: 3rem;"></i>';
+            } else {
+                premiumStatusSpan.innerHTML = '<span style="color:#aaa;">No premium (cuenta estándar)</span>';
+                premiumChip.innerHTML = '<i class="fas fa-star"></i> Estándar';
+                premiumChip.style.background = "#4a5568";
+                avatarDiv.style.background = "linear-gradient(145deg, #3a6ea5, #1e3a5f)";
+                avatarDiv.innerHTML = '<i class="fas fa-user-astronaut"></i>';
             }
             
-            const shareText = `📱 *Mi perfil de Telegram*\n👤 Nombre: ${userData.first_name || ''} ${userData.last_name || ''}\n🆔 ID: ${userData.id}\n👾 Username: ${userData.username ? '@'+userData.username : 'no disponible'}`;
-            // Usar método shareToStory si está disponible, o simplemente un popup + copia
-            if (tg.shareToStory) {
-                tg.shareToStory(shareText);
-            } else {
+            // Si tiene nombre, mostrar iniciales en tooltip? no necesario.
+            // Simular estrellas iniciales? Obtener saldo de estrellas no es posible directamente, pero simulamos opción de pago.
+            // Estrellas: Simulamos que el usuario tiene 0 estrellas visibles, pero usamos la API de invoice (stars).
+        } catch (err) {
+            console.error(err);
+            userIdSpan.textContent = 'Error al cargar';
+            showToast("Error al leer datos de Telegram", 2000);
+        }
+    }
+    
+    // FUNCIÓN PARA PAGO CON ESTRELLAS (usando invoice de Telegram)
+    function sendStarsInvoice(amount = 100) {
+        // Las estrellas de Telegram se manejan con "XTR" (Telegram Stars)
+        // Creamos una factura con la api de WebApp: `tg.openInvoice`
+        // El título y descripción deben ser atractivos.
+        if (!tg.initDataUnsafe?.user?.id) {
+            showToast("❌ Necesitas estar autenticado en Telegram para pagar.", 2500);
+            return;
+        }
+        const invoiceData = {
+            title: "✨ Apoyo con estrellas ✨",
+            description: `Gracias por apoyar el desarrollo de TeleWebApp. Recibirás insignia virtual. ${amount} estrellas.`,
+            currency: "XTR",   // Código de Telegram Stars
+            total_amount: amount,
+            // payload necesario para identificar transacción
+            payload: JSON.stringify({ user_id: userData.id, stars: amount, product: "support_stars" }),
+            need_name: false,
+            need_phone_number: false,
+            need_email: false
+        };
+        
+        try {
+            tg.openInvoice(invoiceData.title, invoiceData.description, invoiceData.payload, 
+                           invoiceData.currency, invoiceData.total_amount);
+            // Evento de pago exitoso se captura con onEvent
+        } catch(e) {
+            console.error(e);
+            showToast("No se pudo iniciar el pago. Tu versión de Telegram puede no soportar estrellas.", 3000);
+        }
+    }
+    
+    // Pago con monto personalizado: pregunta al usuario (popup)
+    function requestCustomStars() {
+        tg.showPopup({
+            title: "💫 Personalizar estrellas",
+            message: "Ingresa la cantidad de estrellas (mínimo 10, máximo 2500):",
+            buttons: [{type: "ok", text: "Pagar"}, {type: "cancel"}]
+        }, (btnId) => {
+            if (btnId === "ok") {
                 tg.showPopup({
-                    title: 'Compartir información',
-                    message: `Copia estos datos:\n${shareText.replace(/\*/g, '')}`,
-                    buttons: [{type: 'ok', text: 'Copiar'}, {type: 'cancel'}]
-                }, (btnId) => {
-                    if (btnId === 'ok') {
-                        navigator.clipboard.writeText(shareText.replace(/\*/g, ''));
-                        tg.showPopup({title: 'Copiado', message: 'Texto copiado al portapapeles', buttons: [{type: 'ok'}]});
+                    title: "Monto en estrellas",
+                    message: "Escribe el número (ej: 50)",
+                    buttons: [{type: "ok"}, {type: "cancel"}]
+                }, (response) => {
+                    // No hay input directo, pero podemos usar prompt? No, en webview se puede usar showPrompt? Mejor usar otro popup? 
+                    // Usamos un segundo popup con campos no es nativo. Implementaremos un input básico con alerta personalizada usando tg.showPopup con texto custom.
+                    // Para simplificar, usamos otro método: pedir con un prompt del sistema (navegador) pero puede romper la UX.
+                    // Usamos un pequeño prompt externo dentro de la web?
+                    let stars = prompt("✨ Cantidad de estrellas (mínimo 10):", "100");
+                    if(stars !== null && !isNaN(stars) && stars >= 10 && stars <= 5000) {
+                        sendStarsInvoice(parseInt(stars));
+                    } else {
+                        showToast("Monto inválido. Debe ser entre 10 y 5000 estrellas.", 2500);
                     }
                 });
             }
-        }
-        
-        // Cerrar WebApp correctamente
-        function closeWebApp() {
-            tg.close();
-        }
-        
-        // Mejorar la experiencia con el botón de cierre, además listener para back button
-        tg.BackButton.onClick(() => {
-            tg.close();
         });
-        tg.BackButton.show();
-        
-        // Esperar a que el DOM esté listo y cargar datos
-        document.addEventListener('DOMContentLoaded', () => {
-            loadUserData();
-            
-            // Asignar eventos a botones
-            document.getElementById('copyIdBtn').addEventListener('click', copyUserId);
-            document.getElementById('shareInfoBtn').addEventListener('click', shareInfo);
-            document.getElementById('closeBtn').addEventListener('click', closeWebApp);
-            
-            // También si el usuario toca el avatar, mostrar un popup informativo de la foto
-            avatarContainer.addEventListener('click', () => {
-                if (userData.id) {
-                    tg.showPopup({
-                        title: 'Foto de perfil real',
-                        message: `Para obtener tu foto de perfil real de Telegram, el bot necesita usar el método getUserProfilePhotos con tu ID (${userData.id}).\n\nEn esta demo mostramos un avatar basado en tus iniciales.`,
-                        buttons: [{type: 'ok'}]
-                    });
-                } else {
-                    tg.showPopup({
-                        title: 'Sin acceso a foto',
-                        message: 'Inicia sesión en Telegram para poder acceder a más datos.',
-                        buttons: [{type: 'ok'}]
-                    });
-                }
+    }
+    
+    // Simular obtener saldo de estrellas (No es posible de manera nativa pero mostramos un placeholder)
+    function loadStarsBalanceHint() {
+        // En la interfaz de estrellas solo mostramos un número simbólico.
+        starQtySpan.textContent = "??";  // No se puede consultar directamente
+        // Podemos poner mensaje dinámico
+        const starsBox = document.getElementById('starsBox');
+        // Agregar tooltip
+        starQtySpan.textContent = "✨";
+    }
+    
+    // Animación al copiar ID
+    async function copyUserId() {
+        if (!userData.id) {
+            showToast("No hay ID para copiar", 1500);
+            return;
+        }
+        try {
+            await navigator.clipboard.writeText(userData.id.toString());
+            showToast(`✅ ID ${userData.id} copiado al portapapeles`, 2000);
+            tg.HapticFeedback?.notificationOccurred('success');
+            // Animación en el botón
+            const copyBtn = document.getElementById('copyIdBtn');
+            copyBtn.classList.add('animate-pulse');
+            setTimeout(() => copyBtn.classList.remove('animate-pulse'), 400);
+        } catch (err) {
+            showToast("Error al copiar", 1500);
+        }
+    }
+    
+    // Compartir información formateada (share)
+    function shareProfileInfo() {
+        if (!userData.id) {
+            showToast("Cargando datos...", 1500);
+            return;
+        }
+        const shareText = `🌟 Mi perfil Telegram 🌟\n👤 Nombre: ${fullNameSpan.innerText}\n🆔 ID: ${userData.id}\n${userData.username ? '👾 Username: @'+userData.username : ''}\n${userData.is_premium ? '✨ Cuenta Premium ✨' : '⭐ Cuenta estándar'}\n📅 Fecha: ${new Date().toLocaleDateString()}`;
+        if (tg.shareToStory) {
+            tg.shareToStory(shareText);
+        } else {
+            tg.showPopup({
+                title: "Compartir perfil",
+                message: shareText,
+                buttons: [{type: "ok", text: "Copiar texto"}]
+            }, (btn) => {
+                if(btn === 'ok') navigator.clipboard.writeText(shareText);
             });
+        }
+    }
+    
+    // Eventos de pago: Escuchar invoice cerrado
+    tg.onEvent('invoiceClosed', (event) => {
+        if (event.status === 'paid') {
+            showToast("🎉 ¡Pago exitoso! Muchas gracias por las estrellas. 🎉", 4000);
+            // Aquí se podría actualizar alguna insignia en la UI
+            const starDiv = document.getElementById('starsBox');
+            starDiv.style.animation = 'pulse 0.6s ease';
+            setTimeout(() => starDiv.style.animation = '', 600);
+        } else {
+            showToast("Pago cancelado o no completado.", 2000);
+        }
+    });
+    
+    // Función para dar animación adicional a la tarjeta
+    function animateCard() {
+        const container = document.querySelector('.glass-card');
+        container.style.transform = 'scale(1.01)';
+        setTimeout(() => container.style.transform = '', 200);
+    }
+    
+    // Cerrar la webapp
+    function closeWebApp() {
+        tg.close();
+    }
+    
+    // Ajustar tema dinámico
+    function applyTheme() {
+        document.body.style.backgroundColor = tg.themeParams.bg_color || '#0f0f1a';
+        document.body.style.color = tg.themeParams.text_color || '#ffffff';
+    }
+    tg.onEvent('themeChanged', applyTheme);
+    applyTheme();
+    
+    // --- EVENTOS Y CARGAR INFORMACIÓN ADICIONAL: Detectar Premium a través de un método alternativo ---
+    // Si el campo is_premium no existe, se puede intentar con el parámetro 'premium' del objeto user (some bots lo incluyen)
+    // ya lo hicimos. Perfecto.
+    function enhancePremiumDetection() {
+        // Extraer de initDataUnsafe si hay más campos.
+        const user = tg.initDataUnsafe?.user;
+        if (user && typeof user.is_premium === 'undefined' && user.premium === true) {
+            userData.is_premium = true;
+            premiumStatusSpan.innerHTML = '<span style="color:#FFD966;"><i class="fas fa-crown"></i> PREMIUM ACTIVO</span>';
+            premiumChip.innerHTML = '<i class="fas fa-crown"></i> PREMIUM ✨';
+            avatarDiv.style.background = "linear-gradient(145deg, #f7b42c, #fc575e)";
+            avatarDiv.innerHTML = '<i class="fas fa-crown"></i>';
+        } else if (user && user.is_premium === true) {
+            userData.is_premium = true;
+        }
+        // Si no, mantener.
+    }
+    
+    // Inicialización completa
+    function init() {
+        loadTelegramUserData();
+        enhancePremiumDetection();
+        updateDateTime();
+        loadStarsBalanceHint();
+        
+        // Asignar eventos a botones
+        document.getElementById('payStarsBtn').addEventListener('click', () => {
+            sendStarsInvoice(100);   // pago de 100 estrellas como ejemplo
+            animateCard();
         });
+        document.getElementById('payCustomStarsBtn').addEventListener('click', () => {
+            requestCustomStars();
+            animateCard();
+        });
+        document.getElementById('copyIdBtn').addEventListener('click', copyUserId);
+        document.getElementById('shareBtn').addEventListener('click', shareProfileInfo);
+        document.getElementById('closeBtn').addEventListener('click', closeWebApp);
         
-        // Manejar cambios de tema dinámicos (si el usuario cambia de tema)
-        tg.onEvent('themeChanged', updateTheme);
-        
-        // Notificar que la WebApp está lista
+        // Notificar que app está lista y expandida
         tg.ready();
-    </script>
+    }
+    
+    init();
+</script>
 </body>
 </html>
