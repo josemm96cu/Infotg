@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Telegram WebApp - Perfil y Datos</title>
+    <!-- Telegram WebApp CDN oficial -->
+    <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            padding: 20px;
+            transition: background 0.2s ease, color 0.2s ease;
+            min-height: 100vh;
+        }
+
+        /* Contenedor principal tipo tarjeta */
+        .container {
+            max-width: 550px;
+            margin: 0 auto;
+            background: var(--tg-theme-secondary-bg-color, #f5f5f5);
+            border-radius: 28px;
+            padding: 24px 20px 32px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: background 0.2s;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: var(--tg-theme-button-color, #3390ec);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .sub {
+            color: var(--tg-theme-hint-color, #8e8e93);
+            margin-bottom: 28px;
+            font-size: 0.9rem;
+            border-left: 3px solid var(--tg-theme-button-color, #3390ec);
+            padding-left: 12px;
+        }
+
+        /* Avatar grande */
+        .avatar-section {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 20px;
+        }
+
+        .avatar-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--tg-theme-hint-color, #c4c4c6);
+            border: 3px solid var(--tg-theme-button-color, #3390ec);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+        }
+
+        .avatar-placeholder {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6c93ff, #3b6eff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            border: 3px solid var(--tg-theme-button-color, #3390ec);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+        }
+
+        /* Tarjetas de datos */
+        .info-card {
+            background: var(--tg-theme-bg-color, #ffffff);
+            border-radius: 20px;
+            padding: 16px 18px;
+            margin: 16px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: background 0.2s;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--tg-theme-hint-color, #e5e5ea);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: var(--tg-theme-hint-color, #6c6c70);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-weight: 500;
+            font-size: 1rem;
+            word-break: break-word;
+            text-align: right;
+            max-width: 60%;
+            color: var(--tg-theme-text-color, #000);
+        }
+
+        .code-value {
+            font-family: monospace;
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+
+        /* Botones estilo Telegram */
+        .telegram-button {
+            background: var(--tg-theme-button-color, #3390ec);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            border: none;
+            border-radius: 40px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            width: 100%;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin-top: 16px;
+        }
+
+        .telegram-button:active {
+            opacity: 0.7;
+        }
+
+        .secondary-button {
+            background: transparent;
+            border: 1px solid var(--tg-theme-button-color, #3390ec);
+            color: var(--tg-theme-button-color, #3390ec);
+            margin-top: 8px;
+        }
+
+        .footer-note {
+            margin-top: 28px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--tg-theme-hint-color, #8e8e93);
+        }
+
+        /* Loader */
+        .loader {
+            text-align: center;
+            padding: 30px;
+            font-style: italic;
+            color: var(--tg-theme-hint-color);
+        }
+
+        /* Mensaje de error / info */
+        .error-message {
+            background: rgba(255, 69, 58, 0.1);
+            border-left: 4px solid #ff453a;
+            padding: 12px;
+            border-radius: 14px;
+            margin: 16px 0;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+            .container {
+                padding: 18px 16px;
+            }
+            .info-value {
+                max-width: 55%;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Telegram Info <span class="badge">WebApp</span></h1>
+        </div>
+        <div class="sub">Datos extraídos directamente de la cuenta de Telegram</div>
+
+        <!-- Avatar dinámico -->
+        <div class="avatar-section" id="avatarContainer">
+            <div class="loader">Cargando perfil...</div>
+        </div>
+
+        <!-- Panel de información principal -->
+        <div class="info-card" id="infoPanel">
+            <div class="info-row">
+                <span class="info-label">🆔 ID de usuario</span>
+                <span class="info-value" id="userId">—</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">👤 Nombre</span>
+                <span class="info-value" id="firstName">—</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">🏷️ Apellido</span>
+                <span class="info-value" id="lastName">—</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">@ Username</span>
+                <span class="info-value" id="username">—</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">🌐 Idioma</span>
+                <span class="info-value" id="languageCode">—</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">📱 Plataforma</span>
+                <span class="info-value" id="platform">—</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">📲 Versión WebApp</span>
+                <span class="info-value" id="version">—</span>
+            </div>
+        </div>
+
+        <!-- Estado de la foto de perfil (acceso) -->
+        <div id="photoStatus" class="error-message" style="display: none;"></div>
+
+        <!-- Botones de acción -->
+        <button class="telegram-button" id="copyIdBtn">📋 Copiar mi ID de Telegram</button>
+        <button class="telegram-button secondary-button" id="shareInfoBtn">📤 Compartir mi información</button>
+        <button class="telegram-button secondary-button" id="closeBtn" style="background: var(--tg-theme-destructive-text-color, #ff3b30); border: none; color: white;">✖️ Cerrar WebApp</button>
+        
+        <div class="footer-note">
+            Los datos se obtienen directamente de la API de Telegram WebApp.<br>
+            La foto de perfil se muestra si el usuario ha concedido acceso.
+        </div>
+    </div>
+
+    <script>
+        // Inicializar WebApp de Telegram
+        const tg = window.Telegram.WebApp;
+        
+        // Expandir la WebApp para mejor experiencia
+        tg.expand();
+        
+        // Colores dinámicos según tema del cliente
+        const updateTheme = () => {
+            document.body.style.backgroundColor = tg.themeParams.bg_color || '#ffffff';
+            document.body.style.color = tg.themeParams.text_color || '#000000';
+            // También se podría ajustar más estilos, pero CSS vars lo manejan
+        };
+        updateTheme();
+        
+        // Referencias a elementos DOM
+        const userIdSpan = document.getElementById('userId');
+        const firstNameSpan = document.getElementById('firstName');
+        const lastNameSpan = document.getElementById('lastName');
+        const usernameSpan = document.getElementById('username');
+        const languageCodeSpan = document.getElementById('languageCode');
+        const platformSpan = document.getElementById('platform');
+        const versionSpan = document.getElementById('version');
+        const avatarContainer = document.getElementById('avatarContainer');
+        const photoStatusDiv = document.getElementById('photoStatus');
+        
+        // Variables para almacenar datos del usuario
+        let userData = {
+            id: null,
+            first_name: null,
+            last_name: null,
+            username: null,
+            language_code: null
+        };
+        
+        // Función para mostrar el avatar (con foto real o placeholder)
+        function displayAvatar(photoUrl = null, initials = '?') {
+            avatarContainer.innerHTML = ''; // Limpiar loader
+            if (photoUrl && photoUrl !== '') {
+                // Intentar mostrar la imagen de perfil de Telegram
+                const img = document.createElement('img');
+                img.className = 'avatar-img';
+                img.alt = 'Avatar';
+                img.src = photoUrl;
+                img.onerror = () => {
+                    // Si falla la carga, mostrar placeholder con iniciales
+                    showPlaceholderAvatar(initials);
+                };
+                avatarContainer.appendChild(img);
+            } else {
+                showPlaceholderAvatar(initials);
+            }
+        }
+        
+        function showPlaceholderAvatar(initials) {
+            avatarContainer.innerHTML = '';
+            const placeholder = document.createElement('div');
+            placeholder.className = 'avatar-placeholder';
+            // Tomar hasta dos letras: primera letra del nombre, o primera del apellido
+            let text = initials.length > 0 ? initials.substring(0,2).toUpperCase() : '?';
+            placeholder.textContent = text;
+            avatarContainer.appendChild(placeholder);
+        }
+        
+        // Obtener iniciales del usuario
+        function getUserInitials() {
+            let first = userData.first_name || '';
+            let last = userData.last_name || '';
+            if (first.length > 0 && last.length > 0) {
+                return first[0] + last[0];
+            } else if (first.length > 0) {
+                return first[0];
+            } else if (last.length > 0) {
+                return last[0];
+            } else if (userData.username && userData.username.length > 0) {
+                return userData.username[0];
+            }
+            return 'U';
+        }
+        
+        // Cargar foto de perfil vía método experimental y API de Telegram
+        // Nota: Telegram WebApp NO tiene un método directo .getProfilePhoto, pero podemos usar
+        // el objeto `Telegram.WebApp.initDataUnsafe.user` para saber que el usuario existe.
+        // Para obtener la foto de perfil REAL, usamos un endpoint especial que requiere el user id
+        // y un token de bot? No es posible directamente por seguridad.
+        // Sin embargo, podemos usar el método `openTelegramLink` o mostrar un aviso.
+        // Pero en la documentación de Telegram Bots API, la WebApp puede solicitar permiso de "photo" si el bot tiene el método.
+        // De manera alternativa, para demostración y por privacidad, Telegram solo provee foto si el bot
+        // ha solicitado acceso mediante `requestWriteAccess` o similar, pero no hay método nativo.
+        // Implementación creativa: Mostramos foto predeterminada con iniciales y damos opción de usar
+        // `Telegram.WebApp.showPopup` indicando cómo puede el usuario compartir su foto.
+        // Sin embargo, para satisfacer "extraer foto de perfil de telegram", podemos usar la API de Bot 
+        // si el bot conoce el user_id y tiene acceso a getFile? No es viable en solo frontend.
+        // En su lugar, aprovechamos la posibilidad de que el usuario *suba* su foto a un servidor? No.
+        // Lo correcto: la WebApp no puede extraer la foto de perfil directamente por políticas de privacidad.
+        // Pero podemos mostrar un enlace a un método alternativo: usando `tg.requestContact` etc? No.
+        // Para una solución más elegante, usaré un servicio que genera avatar basado en iniciales + color y 
+        // también verifico si el objeto `user` tiene `photo_url`? No existe en initDataUnsafe.
+        // Algunas implementaciones custom: si el bot ha solicitado `requestWriteAccess` y el usuario aceptó,
+        // se puede recuperar. No es estándar. Por tanto, mostraré un mensaje explicativo y usaré placeholder
+        // con las iniciales, pero también permitiré que si el usuario quiere ver su foto real, 
+        // podemos generar un "avatar por defecto" con el ID de usuario. En esta demo, usaré una API externa 
+        // de avatar UI (UI Avatars) para generar una imagen con iniciales, simulando la foto, y dando información.
+        // Aún así, cumplo parcialmente: el usuario ve una representación visual de su perfil.
+        // Para mejorar: mostrar el avatar real si el bot está configurado para obtener la foto mediante getUserProfilePhotos.
+        // Pero en una WebApp estática sin backend, no se puede obtener la foto real debido a restricciones.
+        // La mejor aproximación: mostrar un placeholder, y mediante el botón solicitar al bot que envíe la foto.
+        // Sin embargo, el prompt es: "extraiga información de quien abre la web, foto de perfil de telegram o id".
+        // Entonces extraemos ID, nombre, username, etc., y foto de perfil: si el usuario ha iniciado sesión,
+        // podemos mostrar su foto REAL si usamos un endpoint de CDN de Telegram usando `user.id` y un bot token? No seguro.
+        // Explicaré en la interfaz que la foto requiere interacción adicional, pero mostraré un avatar interactivo.
+        // Finalmente, por cumplimiento, mostraré un aviso informativo y un avatar generado con iniciales.
+        
+        // Función para obtener foto real vía un proxy (hipotético) pero no se puede sin backend.
+        // Así que implemento generador de avatar basado en ID + nombre, parecido a lo que hace Gravatar.
+        function generateAvatarUrl(userId, name) {
+            // Usamos servicio UI Avatars para crear una imagen basada en iniciales
+            const initials = getUserInitials();
+            // URL de UI Avatars (servicio gratuito)
+            return `https://ui-avatars.com/api/?background=3b6eff&color=fff&rounded=true&size=120&bold=true&length=2&name=${encodeURIComponent(initials)}`;
+        }
+        
+        // Recopilar datos del usuario desde Telegram WebApp
+        function loadUserData() {
+            try {
+                const initDataUnsafe = tg.initDataUnsafe || {};
+                const user = initDataUnsafe.user || {};
+                
+                // Asignar valores reales
+                userData.id = user.id || null;
+                userData.first_name = user.first_name || null;
+                userData.last_name = user.last_name || null;
+                userData.username = user.username || null;
+                userData.language_code = user.language_code || navigator.language.split('-')[0] || 'en';
+                
+                // Mostrar en DOM
+                userIdSpan.textContent = userData.id ? userData.id : 'No disponible (sin inicio sesión)';
+                firstNameSpan.textContent = userData.first_name || '—';
+                lastNameSpan.textContent = userData.last_name || '—';
+                usernameSpan.textContent = userData.username ? '@' + userData.username : '—';
+                languageCodeSpan.textContent = userData.language_code || '—';
+                platformSpan.textContent = tg.platform || 'desconocida';
+                versionSpan.textContent = tg.version || '6.0+';
+                
+                // Iniciales para avatar
+                const initials = getUserInitials();
+                
+                // Mostrar foto de perfil: como no hay método directo, usamos avatar generado con iniciales
+                // pero además mostramos un mensaje educativo: que la foto real solo está disponible si el bot 
+                // solicita permiso, etc. Y proporcionamos un botón alternativo para ver la foto real desde el perfil.
+                const avatarUrl = generateAvatarUrl(userData.id, initials);
+                displayAvatar(avatarUrl, initials);
+                
+                // Información extra sobre la foto de perfil
+                if (userData.id) {
+                    photoStatusDiv.style.display = 'block';
+                    photoStatusDiv.innerHTML = `ℹ️ Nota: La foto de perfil real de Telegram requiere permisos adicionales del bot. Mostramos un avatar personalizado con tus iniciales. Tu ID de usuario: <strong>${userData.id}</strong> puede ser usado por el bot para obtener tu foto mediante la API de bots (getUserProfilePhotos).`;
+                    photoStatusDiv.style.background = 'rgba(52, 199, 89, 0.1)';
+                    photoStatusDiv.style.borderLeftColor = '#34c759';
+                } else {
+                    photoStatusDiv.style.display = 'block';
+                    photoStatusDiv.innerHTML = `⚠️ No se ha podido obtener ID de usuario. Asegúrate de abrir esta WebApp desde Telegram. La foto de perfil no está disponible.`;
+                    photoStatusDiv.style.background = 'rgba(255, 149, 0, 0.1)';
+                }
+                
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+                userIdSpan.textContent = 'Error al cargar';
+                avatarContainer.innerHTML = '<div class="loader">Error obteniendo datos</div>';
+                photoStatusDiv.style.display = 'block';
+                photoStatusDiv.innerHTML = `❌ Error: ${error.message}. Asegúrate de abrir la app dentro de Telegram.`;
+            }
+        }
+        
+        // Método para copiar ID al portapapeles
+        function copyUserId() {
+            const idText = userData.id ? userData.id.toString() : '';
+            if (!idText || idText === 'null') {
+                tg.showPopup({
+                    title: 'Sin ID',
+                    message: 'No hay ID de usuario disponible para copiar.',
+                    buttons: [{type: 'ok'}]
+                });
+                return;
+            }
+            
+            // Usar API nativa de clipboard
+            navigator.clipboard.writeText(idText).then(() => {
+                tg.showPopup({
+                    title: '✅ Copiado',
+                    message: `ID ${idText} copiado al portapapeles.`,
+                    buttons: [{type: 'ok'}]
+                });
+                tg.HapticFeedback?.notificationOccurred('success');
+            }).catch(() => {
+                tg.showPopup({
+                    title: 'Error',
+                    message: 'No se pudo copiar el ID manualmente.',
+                    buttons: [{type: 'ok'}]
+                });
+            });
+        }
+        
+        // Compartir información (ID, nombre) usando el método shareToStory o popup
+        function shareInfo() {
+            if (!userData.id) {
+                tg.showPopup({
+                    title: 'Info incompleta',
+                    message: 'No hay datos de usuario para compartir.',
+                    buttons: [{type: 'ok'}]
+                });
+                return;
+            }
+            
+            const shareText = `📱 *Mi perfil de Telegram*\n👤 Nombre: ${userData.first_name || ''} ${userData.last_name || ''}\n🆔 ID: ${userData.id}\n👾 Username: ${userData.username ? '@'+userData.username : 'no disponible'}`;
+            // Usar método shareToStory si está disponible, o simplemente un popup + copia
+            if (tg.shareToStory) {
+                tg.shareToStory(shareText);
+            } else {
+                tg.showPopup({
+                    title: 'Compartir información',
+                    message: `Copia estos datos:\n${shareText.replace(/\*/g, '')}`,
+                    buttons: [{type: 'ok', text: 'Copiar'}, {type: 'cancel'}]
+                }, (btnId) => {
+                    if (btnId === 'ok') {
+                        navigator.clipboard.writeText(shareText.replace(/\*/g, ''));
+                        tg.showPopup({title: 'Copiado', message: 'Texto copiado al portapapeles', buttons: [{type: 'ok'}]});
+                    }
+                });
+            }
+        }
+        
+        // Cerrar WebApp correctamente
+        function closeWebApp() {
+            tg.close();
+        }
+        
+        // Mejorar la experiencia con el botón de cierre, además listener para back button
+        tg.BackButton.onClick(() => {
+            tg.close();
+        });
+        tg.BackButton.show();
+        
+        // Esperar a que el DOM esté listo y cargar datos
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            
+            // Asignar eventos a botones
+            document.getElementById('copyIdBtn').addEventListener('click', copyUserId);
+            document.getElementById('shareInfoBtn').addEventListener('click', shareInfo);
+            document.getElementById('closeBtn').addEventListener('click', closeWebApp);
+            
+            // También si el usuario toca el avatar, mostrar un popup informativo de la foto
+            avatarContainer.addEventListener('click', () => {
+                if (userData.id) {
+                    tg.showPopup({
+                        title: 'Foto de perfil real',
+                        message: `Para obtener tu foto de perfil real de Telegram, el bot necesita usar el método getUserProfilePhotos con tu ID (${userData.id}).\n\nEn esta demo mostramos un avatar basado en tus iniciales.`,
+                        buttons: [{type: 'ok'}]
+                    });
+                } else {
+                    tg.showPopup({
+                        title: 'Sin acceso a foto',
+                        message: 'Inicia sesión en Telegram para poder acceder a más datos.',
+                        buttons: [{type: 'ok'}]
+                    });
+                }
+            });
+        });
+        
+        // Manejar cambios de tema dinámicos (si el usuario cambia de tema)
+        tg.onEvent('themeChanged', updateTheme);
+        
+        // Notificar que la WebApp está lista
+        tg.ready();
+    </script>
+</body>
+</html>
